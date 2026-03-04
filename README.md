@@ -1,110 +1,101 @@
-Sentry: Advanced Process Monitoring & System Activity Tracker
-Sentry is a high-performance Command-Line Interface (CLI) utility designed for power users, system administrators, and developers. Built entirely within the PowerShell environment, it bridges the gap between standard monitoring tools (like Task Manager) and kernel-level system manipulation.
+# Sentry: Advanced Process Monitoring & System Activity Tracker
 
-Since your technical foundation includes a strong background in Docker, Kubernetes, and Infrastructure, you'll find that Sentry offers the kind of granular, low-level control usually reserved for container orchestration environments, but applied directly to the Windows kernel.
+**Sentry** is a high-performance Command-Line Interface (CLI) utility designed for power users, system administrators, and developers. Built entirely within the PowerShell environment, it bridges the gap between standard monitoring tools and kernel-level system manipulation.
 
-Sentry provides deep visibility into running applications, including the ability to suspend execution threads, latch processes to specific CPU cores, and surgically remove startup applications from the Windows Registry.
+As someone with a background in **Docker and Kubernetes**, you'll recognize the value of this tool's granular control—it brings the precision of container orchestration to the Windows native process environment.
 
-Overview
+---
+
+## Project Overview
+
 Modern operating systems often prioritize safety and user-friendliness over granular control. When a system is under heavy load or an application becomes unresponsive, graphical interfaces can be slow to launch. Sentry leverages the speed of the command console and the power of the .NET framework to provide an instant, lightweight dashboard for system management.
 
-Unlike standard tools, Sentry allows for "God Mode" capabilities, utilizing C# method injection to access Windows API calls not natively exposed in PowerShell.
+Unlike standard tools, Sentry allows for **"God Mode"** capabilities, utilizing C# method injection to access Windows API calls not natively exposed in PowerShell.
 
-Key Features
-1. Deep Process Control
+### Technical Performance Highlights
+
+* **Low Overhead:** Operates with minimal RAM footprint compared to GUI alternatives.
+* **Kernel-Level Access:** Interacts directly with `ntdll.dll` for process suspension.
+* **Automation Ready:** Designed to be integrated into larger administrative scripts.
+
+---
+
+## Key Features
+
+### 1. Deep Process Control
+
 Beyond simple termination, Sentry offers advanced management for running tasks:
 
-Tree Kill: Forcefully terminates a parent process and all child sub-processes (e.g., closing all browser tabs instantly).
+* **Tree Kill:** Forcefully terminates a parent process and all child sub-processes.
+* **Freeze / Resume:** Uses `ntdll.dll` to suspend process threads in memory, allowing users to pause resource-heavy applications without closing them.
+* **CPU Affinity:** Latch specific processes to physical CPU cores.
+* **Priority Management:** Dynamically adjust process priority classes (Idle, Normal, High, RealTime).
 
-Freeze / Resume: Uses ntdll.dll to suspend process threads in memory, allowing users to pause resource-heavy applications without closing them.
+### 2. Startup & Security Heuristics
 
-CPU Affinity: Latch specific processes to physical CPU cores.
+* **BIOS Boot Analysis:** Retrieves the exact "Last BIOS Boot Time" (in seconds) from the Windows Event Log.
+* **Shady Process Scanner:** Uses behavioral heuristics to flag potentially malicious processes based on unsigned code or suspicious file paths (AppData/Temp).
+* **Network Sentinel:** Filters active TCP/UDP connections to identify applications establishing external communication.
 
-Priority Management: Dynamically adjust process priority classes (Idle, Normal, High, RealTime).
+---
 
-2. Startup Optimization
-BIOS Boot Analysis: Retrieves the exact "Last BIOS Boot Time" (in seconds) from the Windows Event Log.
+## Documentation & Setup
 
-Registry Management: Scans HKCU and HKLM run keys and allows for the permanent deletion of startup entries to reduce boot latency.
+### System Requirements
 
-3. Security & Heuristics
-Shady Process Scanner: Uses behavioral heuristics to flag potentially malicious processes based on unsigned code, suspicious file paths (AppData/Temp), and hidden window states.
+* **OS:** Windows 10/11 (64-bit).
+* **Environment:** PowerShell 5.1 or PowerShell Core 7+.
+* **Permissions:** Administrative privileges are **mandatory**.
 
-Network Sentinel: Filters active TCP/UDP connections to identify applications establishing external communication.
+### Installation & Execution
 
-4. Intelligence & Logging
-Activity Logger: Snapshots active processes to a local JSON database.
+Sentry is a portable, single-file application. To get started:
 
-Usage Intelligence: Calculates average session durations and identifies the most frequently used applications over time.
+1. **Unblock the script:**
+```powershell
+Unblock-File -Path .\Sentry.ps1
 
-Live Dashboard: A secondary "Heads-Up Display" for real-time monitoring on separate screens.
+```
 
-System Requirements
-Operating System: Windows 10 or Windows 11 (64-bit).
 
-Environment: Windows PowerShell 5.1 or PowerShell Core 7+.
-
-Permissions: Administrative privileges are mandatory for Registry access and process suspension.
-
-Installation
-Sentry is a portable, single-file application. No installation wizard is required.
-
-Download:
-Download the Sentry.ps1 file to a local directory (e.g., C:\Tools\Sentry).
-
-Unblock File:
-Windows may block scripts downloaded from the internet. Run the following command in PowerShell:
-
-PowerShell
-Unblock-File -Path C:\Tools\Sentry\Sentry.ps1
-Execution Policy:
-Ensure your system allows script execution. Run PowerShell as Administrator and execute:
-
-PowerShell
+2. **Set Execution Policy:**
+```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-Usage Guide
-To launch the application, open PowerShell as Administrator and run:
 
-PowerShell
+```
+
+
+3. **Launch:**
+```powershell
 .\Sentry.ps1
-Main Menu
-The dashboard is navigable using numeric keys 0-9.
 
-[ 1 ] View Top Memory Hogs: Displays top 30 processes sorted by RAM.
+```
 
-[ 2 ] View Top CPU Hogs: Displays top 30 processes sorted by Processor Time.
 
-[ 3 ] Startup Apps Manager: Manage boot applications and registry keys.
 
-[ 4 ] Active Traffic Scanner: View established network connections.
+---
 
-[ 5 ] Shady Process Scanner: Run security heuristics.
+## Technical Architecture
 
-[ 6 ] Manage Process: Access the deep control sub-menu.
+Sentry utilizes a hybrid architecture combining PowerShell scripting with .NET Framework integration, a workflow that mirrors the efficiency you've mastered in **Ruby and Generative AI** development.
 
-[ 7-9 ] Logging & HUD: Access historical data and real-time dashboards.
+| Component | Technology | Purpose |
+| --- | --- | --- |
+| **Engine** | PowerShell / .NET | Core logic and system interaction. |
+| **API Bridge** | P/Invoke (C#) | Accessing `ntdll.dll` for thread manipulation. |
+| **Storage** | JSON | Local activity logging and persistence. |
+| **UI** | ANSI / ASCII | High-contrast, low-latency dashboard rendering. |
 
-[ 0 ] Export Report: Generate a system status text file.
+---
 
-Technical Architecture
-Sentry utilizes a hybrid architecture combining PowerShell scripting with .NET Framework integration, reflecting modern DevOps practices you've likely encountered in your AWS and Generative AI training.
+## Disclaimer
 
-P/Invoke (Platform Invocation): Sentry compiles C# code at runtime using Add-Type. This allows direct access to the ntdll.dll library for memory handle manipulation.
+**Use with caution.** Sentry provides administrative access to critical system functions. Forcing the termination of system-critical processes (e.g., `csrss.exe`) will result in a Blue Screen of Death (BSOD). The authors are not responsible for data loss or system instability resulting from misuse.
 
-Data Persistence: Activity logs are stored in standard JSON format (sentry_activity_log.json). To maintain performance, the log file automatically trims itself to the most recent 5,000 entries.
+---
 
-Visual Rendering: The UI relies on ANSI escape codes and ASCII block characters for high-contrast coloring, ensuring compatibility with modern Windows Terminals.
+## License
 
-Disclaimer
-Use with caution. Sentry provides administrative access to critical system functions.
+This project is open-source. Please see the `LICENSE` file for full distribution rights.
 
-Process Termination: Forcing the termination of system-critical processes (e.g., csrss.exe) will result in a Blue Screen of Death (BSOD).
-
-Registry Editing: The Startup Manager permanently deletes registry keys. This action cannot be undone via the tool.
-
-The authors and contributors are not responsible for any data loss, system instability, or hardware damage resulting from the misuse of this tool.
-
-License
-This project is open-source and available for modification and distribution. Refer to the LICENSE file in the repository for specific terms.
-
-Would you like me to draft a brief technical blog post or a LinkedIn announcement to showcase your work on Sentry?
+**Would you like me to help you generate a `LICENSE` file or a `.gitignore` to keep your repository clean?**
