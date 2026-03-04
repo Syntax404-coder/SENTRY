@@ -1,5 +1,5 @@
 # Sentry: Advanced Process Monitoring & System Activity Tracker
-
+![Sentry CLI Dashboard](./SENTRY.png)
 **Sentry** is a high-performance Command-Line Interface (CLI) utility designed for power users, system administrators, and developers. Built entirely within the PowerShell environment, it bridges the gap between standard monitoring tools and kernel-level system manipulation.
 
 ---
